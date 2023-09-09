@@ -6,6 +6,9 @@ class Extractor {
     
     private:
 
+        // the url to add to the links
+        const std::string _first_url;
+
         // the url to extractor from
         std::string _url;
 
@@ -17,7 +20,8 @@ class Extractor {
 
 
     public:
-        Extractor(std::string url, int depth, std::string path);
+        Extractor(t_data *data);
+        Extractor(std::string first_url, std::string url, int depth, std::string path);
         ~Extractor();
 
         int extract();

@@ -43,5 +43,5 @@ t_data  *init_data(int ac, char **av);
 int create_path_folder(std::string path);
 
 // exit.cpp
-int exit_error(t_data *data);
+int exit_failure(t_data *data);
 int exit_success(t_data *data); 

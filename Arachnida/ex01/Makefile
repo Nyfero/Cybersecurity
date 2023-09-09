@@ -38,7 +38,7 @@ FILES = main.cpp
 
 CLASS = $(addprefix $(CLASS_PATH)/, Extractor.cpp)
 
-UTILS = $(addprefix $(UTILS_PATH)/, create_folder.cpp)
+UTILS = $(addprefix $(UTILS_PATH)/, create_folder.cpp exit.cpp)
 
 PARSING = $(addprefix $(PARSING_PATH)/, parsing_check.cpp parsing_print.cpp parsing_get.cpp)
 

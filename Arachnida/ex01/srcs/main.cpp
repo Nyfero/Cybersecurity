@@ -1,4 +1,5 @@
 #include "../class/Extractor.hpp"
+#include "../inc/spider.h"
 
 int main(int ac, char **av) {
     t_data *data = NULL;
@@ -8,17 +9,12 @@ int main(int ac, char **av) {
     data = init_data(ac, av);
     if (data == NULL)
         return 1;
-    if (create_path_folder(data->path)) {
-        delete data;
-        return 1;
-    }
+    if (create_path_folder(data->path)) 
+        return (exit_failure(data));
 
-    Extractor extractor = Extractor(data->url, data->depth, data->path);
-    if (extractor->extract()) {
-        delete data;
-        return 1;    
-    }
+    Extractor extractor = Extractor(data);
+    if (extractor.extract()) 
+        return (exit_failure(data));
 
-    delete data;
-    return 0;
+    return (exit_success(data));
 }
