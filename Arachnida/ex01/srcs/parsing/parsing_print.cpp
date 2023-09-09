@@ -15,3 +15,18 @@ void print_error_flag(char *flag) {
 void print_error_to_much_flag() {
     std::cout << "Error: too much flags." << std::endl;
 }
+
+void print_error_to_much_arg() {
+    std::cout << "Error: too much arguments." << std::endl;
+    print_usage();  
+}
+
+void print_error_depth() {
+    std::cout << "Error: depth is not valid." << std::endl;
+    print_usage();
+}
+
+void print_error_url() {
+    std::cout << "Error: url is not valid." << std::endl;
+    print_usage();
+}

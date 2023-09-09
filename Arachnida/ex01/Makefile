@@ -24,19 +24,25 @@ INC = $(addprefix $(INC_PATH)/, spider.h)
 
 CLASS_PATH = class
 
-CLASS = $(addprefix $(CLASS_PATH)/, )
+CLASS_H = $(addprefix $(CLASS_PATH)/, Extractor.hpp)
 
 #	Folders
 SRCS_PATH = srcs
+
+UTILS_PATH = utils
 
 PARSING_PATH = parsing
 
 #    Files
 FILES = main.cpp 
 
-PARSING = $(addprefix $(PARSING_PATH)/, parsing.cpp parsing_check.cpp parsing_print.cpp)
+CLASS = $(addprefix $(CLASS_PATH)/, Extractor.cpp)
 
-SRCS = $(addprefix $(SRCS_PATH)/, $(FILES) $(PARSING))
+UTILS = $(addprefix $(UTILS_PATH)/, create_folder.cpp)
+
+PARSING = $(addprefix $(PARSING_PATH)/, parsing_check.cpp parsing_print.cpp parsing_get.cpp)
+
+SRCS = $(addprefix $(SRCS_PATH)/, $(FILES) $(CLASS) $(UTILS) $(PARSING))
 
 #    Compilation
 NAME = spider
@@ -49,12 +55,12 @@ RM = rm -rf
 
 OBJS_PATH = objs/
 
-OBJS = $(patsubst $(SRCS_PATH)%.cpp $(PARSING_PATH)%.cpp,	$(OBJS_PATH)%.o,	$(SRCS))
+OBJS = $(patsubst $(SRCS_PATH)%.cpp $(PARSING_PATH)%.cpp $(CLASS)%.cpp $(UTILS)%.cpp, $(OBJS_PATH)%.o, $(SRCS))
 
 #    Rules
 all: $(NAME)
 
-$(NAME): $(OBJS_PATH) $(OBJS) $(CLASS) $(INC)
+$(NAME): $(OBJS_PATH) $(OBJS) $(CLASS_H) $(INC)
 	@ echo "$(BLUE)\n         ***Make $(NAME) ***\n$(END)"
 	$(HIDE) $(CXX) $(CFLAGS) $(OBJS) -o $(NAME)
 	@ echo "$(GREEN)\n        ---$(NAME) created ---\n$(END)"
@@ -62,7 +68,7 @@ $(NAME): $(OBJS_PATH) $(OBJS) $(CLASS) $(INC)
 $(OBJS_PATH):
 	$(HIDE) mkdir -p $(OBJS_PATH)
 
-$(OBJS_PATH)%.o: $(SRCS_PATH)%.cpp $(PARSING_PATH)%.cpp $(CLASS) Makefile
+$(OBJS_PATH)%.o: $(SRCS_PATH)%.cpp $(CLASS_H) Makefile
 	$(HIDE) $(CXX) $(CFLAGS) -c $< -o $@
 	@ echo "$(GREEN)[ OK ]$(END) $(CYAN)${<:.s=.o}$(END)"
 
