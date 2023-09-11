@@ -1,5 +1,16 @@
 #include "../../inc/spider.h"
 
+static std::string get_url(int ac, char **av) {
+    std::string url = av[ac - 1];
+    size_t  res = url.find('/', url.find_first_not_of('/', url.find('/', 0)));
+
+    if (res == std::string::npos || res == url.size() - 1)
+        if (res == std::string::npos)
+            url.push_back('/');
+    return url;
+}
+
+
 static int is_number(char *str) {
     for (int i = 0; str[i]; i++) {
         if (str[i] < '0' || str[i] > '9')
@@ -49,7 +60,7 @@ static std::string get_path(int ac, char **av) {
 t_data *init_data(int ac, char **av) {
     t_data *data = new t_data;
 
-    data->url = av[ac - 1];
+    data->url = get_url(ac, av);
     data->depth = get_depth(ac, av);
     if (data->depth == -1) {
         delete data;
