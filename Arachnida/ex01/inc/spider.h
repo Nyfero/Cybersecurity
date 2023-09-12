@@ -16,7 +16,6 @@ typedef struct s_data {
 
 }   t_data;
 
-
 /*******************/
 /*     PARSING     */
 /*******************/
@@ -40,8 +39,8 @@ t_data  *init_data(int ac, char **av);
 /*****************/
 
 // create_folder.cpp
-int create_path_folder(std::string path);
+int     create_path_folder(std::string path);
 
 // exit.cpp
-int exit_failure(t_data *data);
-int exit_success(t_data *data); 
+int     exit_failure(t_data *data);
+int     exit_success(t_data *data); 

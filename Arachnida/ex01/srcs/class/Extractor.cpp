@@ -1,5 +1,8 @@
 #include "../../class/Extractor.hpp"
 
+// store the id of the image to download
+size_t  g_image_id = 0;
+
 Extractor::Extractor(t_data *data) : _first_url(data->url), _url(data->url), _depth(data->depth), _path(data->path) {}
 
 Extractor::Extractor(std::string first_url ,std::string url, int depth, std::string path) : _first_url(first_url), _url(url), _depth(depth), _path(path) {}
@@ -73,14 +76,9 @@ int Extractor::download_images() {
         if (url.find("http") == std::string::npos)
             url = _url + url;
         
-        img_name = line.substr(5, line.size() - 6);
-        img_name = _url + img_name;
-        for (size_t i = 0; i < img_name.size(); i++)
-            if (img_name[i] == '/')
-                img_name.replace(i--, 1, "");
+        img_name = "image_" + std::to_string(g_image_id++) + line.substr(line.find_last_of('.'), line.size() - line.find_last_of('.'));
 
-
-        cmd = "curl -s -o \"" + _path + "/" + img_name + "\" \"" + url + "\"";
+        cmd = "curl -s -o \"" + _path + "/" + img_name + " \"" + url + "\"";
         std::cout << cmd << std::endl;
         system(cmd.c_str());
     }
