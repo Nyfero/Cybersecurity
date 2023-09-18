@@ -24,7 +24,7 @@ INC = $(addprefix $(INC_PATH)/, scorpion.h)
 
 CLASS_PATH = class
 
-CLASS_H = $(addprefix $(CLASS_PATH)/,ImageFormat.hpp BMP.hpp GIF.hpp PNG.hpp JPG.hpp)
+CLASS_H = $(addprefix $(CLASS_PATH)/,ImageFormat.hpp)
 
 #	Folders
 SRCS_PATH = srcs
@@ -36,9 +36,9 @@ PARSING_PATH = parsing
 #    Files
 FILES = main.cpp 
 
-CLASS = $(addprefix $(CLASS_PATH)/, ImageFormat.cpp BMP.cpp GIF.cpp PNG.cpp JPG.cpp)
+CLASS = $(addprefix $(CLASS_PATH)/, ImageFormat.cpp)
 
-UTILS = $(addprefix $(UTILS_PATH)/, create_folder.cpp)
+UTILS = $(addprefix $(UTILS_PATH)/, create_folder.cpp data.cpp)
 
 PARSING = $(addprefix $(PARSING_PATH)/, parsing_check.cpp parsing_print.cpp)
 
@@ -49,7 +49,7 @@ NAME = scorpion
 
 CXX = c++
 
-CFLAGS = -Wall -Wextra -Werror
+CFLAGS = -Wall -Wextra -Werror -ljpeg -lpng
 
 RM = rm -rf
 
