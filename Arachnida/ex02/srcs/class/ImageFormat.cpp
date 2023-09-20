@@ -64,12 +64,12 @@ t_data  ImageFormat::getMetaData(t_data data) {
     else if (getExtension() == "gif") {
         data = getGif(data);
     }
-    // else if (getExtension() == "png") {
-    //     data = getPng(data);
-    // }
-    // else if (getExtension() == "bmp") {
-    //     data = getBmp(data);
-    // }
+    else if (getExtension() == "png") {
+        data = getPng(data);
+    }
+    else if (getExtension() == "bmp") {
+        data = getBmp(data);
+    }
     
     return data;
 }
@@ -78,17 +78,24 @@ t_data  ImageFormat::getJpeg(t_data data) {
     FILE *file = fopen(getFilename().c_str(), "rb");
     try {
         struct jpeg_decompress_struct cinfo;
-        (void)cinfo;
         struct jpeg_error_mgr jerr;
-        cinfo.err = jpeg_std_error(&jerr);
 
+        // Initialize the JPEG decompression object
+        cinfo.err = jpeg_std_error(&jerr);
         jpeg_create_decompress(&cinfo);
+
+        // Specify the source file
         jpeg_stdio_src(&cinfo, file);
+
+        // Read the JPEG header
         jpeg_read_header(&cinfo, TRUE);
 
+        // Get the image dimensions
         data.width = cinfo.image_width;
         data.height = cinfo.image_height;
 
+        // Clean up and close the file
+        jpeg_destroy_decompress(&cinfo);
     }
     catch (const std::exception& e) {
         std::cerr << "Error: " << e.what() << std::endl;
@@ -98,38 +105,108 @@ t_data  ImageFormat::getJpeg(t_data data) {
 }
 
 t_data  ImageFormat::getGif(t_data data) {
-    std::ifstream imageFile(getFilename(), std::ios::binary);
+    GifFileType* gifFile = DGifOpenFileName(getFilename().c_str(), nullptr);
 
-    if (!imageFile.is_open()) {
+    if (!gifFile) {
         std::cerr << "Failed to open the file: " << getFilename() << std::endl;
         return data;
     }
 
-    // Read the GIF header
-    char header[10];
-    if (!imageFile.read(header, sizeof(header))) {
-        std::cerr << "Failed to read the GIF header." << std::endl;
+    data.width = gifFile->SWidth;
+    data.height = gifFile->SHeight;
+    
+    DGifCloseFile(gifFile, nullptr);
+
+    return data;
+}
+
+t_data  ImageFormat::getPng(t_data data) {
+    // Open the PNG file for reading in binary mode
+    FILE* file = fopen(getFilename().c_str(), "rb");
+    if (!file) {
+        std::cerr << "Failed to open the PNG file: " << getFilename() << std::endl;
         return data;
     }
 
-    // Check if it's a GIF file
-    if (header[0] != 'G' || header[1] != 'I' || header[2] != 'F') {
-        std::cerr << "Not a valid GIF file: " << getFilename() << std::endl;
+    // Initialize the PNG structure
+    png_structp png = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
+    if (!png) {
+        std::cerr << "Failed to initialize the PNG structure." << std::endl;
+        fclose(file);
         return data;
     }
 
-    // Get the width and height from the header
-    data.width = (static_cast<unsigned int>(header[7]) << 8) | static_cast<unsigned int>(header[6]);
-    data.height = (static_cast<unsigned int>(header[0]) << 8) | static_cast<unsigned int>(header[1]);
+    // Initialize the PNG info structure
+    png_infop info = png_create_info_struct(png);
+    if (!info) {
+        std::cerr << "Failed to initialize the PNG info structure." << std::endl;
+        png_destroy_read_struct(&png, NULL, NULL);
+        fclose(file);
+        return data;
+    }
 
-    uint16_t width = (static_cast<uint16_t>(header[7]) << 8) | static_cast<uint16_t>(header[6]);
-    uint16_t height = (static_cast<uint16_t>(header[8]) << 8) | static_cast<uint16_t>(header[9]);
+    // Set up error handling (if you don't set this up, it won't work)
+    if (setjmp(png_jmpbuf(png))) {
+        std::cerr << "An error occurred while reading the PNG file." << std::endl;
+        png_destroy_read_struct(&png, &info, NULL);
+        fclose(file);
+        return data;
+    }
 
-    // Output image dimensions
-    std::cout << "Image dimensions: " << width << "x" << height << " pixels" << std::endl;
+    // Initialize the PNG IO
+    png_init_io(png, file);
 
-    // Close the file
-    imageFile.close();
+    // Read the PNG header/info
+    png_read_info(png, info);
+
+    // Get image width and height
+    data.width = png_get_image_width(png, info);
+    data.height = png_get_image_height(png, info);
+
+    // Clean up
+    png_destroy_read_struct(&png, &info, NULL);
+    fclose(file);
+
+    return data;
+}
+
+#pragma pack(push, 1)
+struct BMPHeader {
+    uint16_t signature;  // "BM" (Bitmap identifier)
+    uint32_t fileSize;   // Size of the BMP file in bytes
+    uint16_t reserved1;  // Reserved (unused)
+    uint16_t reserved2;  // Reserved (unused)
+    uint32_t dataOffset; // Offset of image data in the file
+    uint32_t headerSize; // Size of the BMP header in bytes
+    int32_t width;       // Width of the image in pixels
+    int32_t height;      // Height of the image in pixels
+    uint16_t planes;     // Number of color planes (must be 1)
+    uint16_t bitsPerPixel; // Number of bits per pixel (e.g., 24 for RGB)
+};
+#pragma pack(pop)
+
+t_data  ImageFormat::getBmp(t_data data) {
+    std::ifstream file(getFilename().c_str(), std::ios::binary);
+
+    if (!file.is_open()) {
+        std::cerr << "Failed to open the BMP file: " << getFilename() << std::endl;
+        return data;
+    }
+
+    // Read the BMP header
+    BMPHeader bmpHeader;
+    file.read(reinterpret_cast<char*>(&bmpHeader), sizeof(BMPHeader));
+
+    if (bmpHeader.signature != 0x4D42) {
+        std::cerr << "Not a valid BMP file: " << getFilename() << std::endl;
+        file.close();
+        return data;
+    }
+
+    data.width = bmpHeader.width;
+    data.height = bmpHeader.height;
+
+    file.close();
 
     return data;
 }

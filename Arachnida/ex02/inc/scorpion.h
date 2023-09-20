@@ -6,6 +6,8 @@
 #include <fstream>
 #include <vector>
 #include <jpeglib.h>
+#include <png.h>
+#include <gif_lib.h>
 
 typedef struct s_exif {
     std::string     key;
@@ -21,6 +23,7 @@ typedef struct s_data {
     std::string     size;
     t_exif          *exif;
 }   t_data;
+
 
 /*******************/
 /*     PARSING     */

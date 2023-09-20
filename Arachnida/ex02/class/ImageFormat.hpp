@@ -23,8 +23,8 @@ class ImageFormat {
     t_data getMetaData(t_data data);
     t_data getJpeg(t_data data);
     t_data getGif(t_data data);
-    // t_data getPng(t_data data);
-    // t_data getBmp(t_data data);
+    t_data getPng(t_data data);
+    t_data getBmp(t_data data);
 };
 
 unsigned char *init_signature(std::string extension);
