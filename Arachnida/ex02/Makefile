@@ -51,6 +51,8 @@ CXX = c++
 
 CFLAGS = -Wall -Wextra -Werror
 
+LIBS = -ljpeg -lpng -lgif -lexiv2
+
 RM = rm -rf
 
 OBJS_PATH = objs/
@@ -62,7 +64,7 @@ all: $(NAME)
 
 $(NAME): $(OBJS_PATH) $(OBJS) $(CLASS_H) $(INC)
 	@ echo "$(BLUE)\n         ***Make $(NAME) ***\n$(END)"
-	$(HIDE) $(CXX) $(CFLAGS) $(OBJS) -o $(NAME) -ljpeg -lpng -lgif
+	$(HIDE) $(CXX) $(CFLAGS) $(OBJS) -o $(NAME) $(LIBS)
 	@ echo "$(GREEN)\n        ---$(NAME) created ---\n$(END)"
 
 $(OBJS_PATH):

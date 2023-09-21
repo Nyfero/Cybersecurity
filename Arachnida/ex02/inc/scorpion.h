@@ -8,6 +8,7 @@
 #include <jpeglib.h>
 #include <png.h>
 #include <gif_lib.h>
+#include <exiv2/exiv2.hpp>
 
 typedef struct s_exif {
     std::string     key;

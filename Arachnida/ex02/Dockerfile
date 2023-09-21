@@ -14,13 +14,8 @@ RUN apt-get update && apt-get install -y \
     libjpeg-dev \
     libpng-dev \
     libgif-dev \
+    libexiv2-dev \
     && rm -rf /var/lib/apt/lists/*
-
-# # Use an existing base image
-# FROM alpine:latest
-
-# # Install libpng-dev
-# RUN apk update && apk add --no-cache libpng-dev
 
 WORKDIR /app
 

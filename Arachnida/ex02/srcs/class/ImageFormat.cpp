@@ -70,6 +70,8 @@ t_data  ImageFormat::getMetaData(t_data data) {
     else if (getExtension() == "bmp") {
         data = getBmp(data);
     }
+
+    data = getExif(data);
     
     return data;
 }
@@ -207,6 +209,44 @@ t_data  ImageFormat::getBmp(t_data data) {
     data.height = bmpHeader.height;
 
     file.close();
+
+    return data;
+}
+
+t_data  ImageFormat::getExif(t_data data) {
+     try {
+        // Open the image file
+        Exiv2::Image::AutoPtr image = Exiv2::ImageFactory::open(getFilename().c_str());
+
+        if (image.get() == 0) {
+            std::cerr << "Failed to open the image: " << getFilename() << std::endl;
+            return data;
+        }
+
+        // Read EXIF metadata
+        image->readMetadata();
+
+        // Get the EXIF data
+        Exiv2::ExifData exifData = image->exifData();
+
+        // Check if there is EXIF data
+        if (!exifData.empty()) {
+            // Iterate through the EXIF data and print it
+            t_exif *tmp = new t_exif;
+            data.exif = tmp;
+            for (Exiv2::ExifData::const_iterator it = exifData.begin(); it != exifData.end(); ++it) {
+                if (!tmp)
+                    tmp = new t_exif;
+                tmp->key = it->key();
+                tmp->value = it->value().toString();
+                tmp->next = NULL;
+                tmp = tmp->next;
+            }
+        }
+    } catch (Exiv2::AnyError& ex) {
+        std::cerr << "Error: " << ex.what() << std::endl;
+        return data;
+    }
 
     return data;
 }
