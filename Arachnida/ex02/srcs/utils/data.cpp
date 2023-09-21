@@ -8,6 +8,7 @@ t_exif *clear_exif(t_exif *exif) {
         tmp->key = "";
         tmp->value = "";
         tmp->next = NULL;
+        delete tmp;
     }
     return exif;
 }
@@ -34,6 +35,7 @@ t_data init_data() {
 }
 
 void    print_data(t_data data) {
+    std::cout << std::endl;
     std::string border = std::string(50, '*');
     std::cout << border << std::endl;
     std::cout << "* Filename: " << data.filename << std::endl;
@@ -45,6 +47,8 @@ void    print_data(t_data data) {
     if (data.exif) {
         t_exif *tmp = data.exif;
         while (tmp) {
+            if (tmp->key.empty())
+                break;
             std::cout << "*\t" << tmp->key << ": " << tmp->value << std::endl;
             tmp = tmp->next;
         }

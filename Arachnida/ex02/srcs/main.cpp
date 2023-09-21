@@ -7,7 +7,6 @@ int main(int ac, char **av) {
         return 1;
     for (int i = 1; i < ac; i++) {
         t_data data = init_data();
-        std::cout << "\e[92m" << av[i] << "\e[39m" << std::endl;
         ImageFormat img(av[i]);
         try {
             data = img.getMetaData(data);
@@ -16,7 +15,7 @@ int main(int ac, char **av) {
         catch (std::exception &e) {
             std::cout << e.what() << std::endl;
         }
-        // data = clear_data(data);
+        data = clear_data(data);
     }
 
     return (0);

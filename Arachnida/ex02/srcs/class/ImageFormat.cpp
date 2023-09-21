@@ -43,15 +43,6 @@ t_data  ImageFormat::getMetaData(t_data data) {
         return data;
     }
 
-    int  len = strlen(reinterpret_cast<const char *>(getSignature()));
-    char buf[len];
-    file.read(buf, len);
-    for (int i = 0; i < len; i++) {
-        if (static_cast<unsigned char>(buf[i]) != getSignature()[i]) {
-            std::cout << "\e[91mThe file " << getFilename() << " isn't valid " << getExtension() << ".\e[39m" << std::endl;
-            return data;
-        }
-    }
     data.filename = getFilename();
     data.extension = getExtension();
     file.seekg(0, std::ios::end);
@@ -235,12 +226,11 @@ t_data  ImageFormat::getExif(t_data data) {
             t_exif *tmp = new t_exif;
             data.exif = tmp;
             for (Exiv2::ExifData::const_iterator it = exifData.begin(); it != exifData.end(); ++it) {
-                if (!tmp)
-                    tmp = new t_exif;
                 tmp->key = it->key();
                 tmp->value = it->value().toString();
-                tmp->next = NULL;
+                tmp->next = new t_exif;
                 tmp = tmp->next;
+                tmp->next = NULL;
             }
         }
     } catch (Exiv2::AnyError& ex) {
