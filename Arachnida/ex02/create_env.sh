@@ -1,4 +1,4 @@
 #/bin/bash/
 
-sudo docker build -t ex02 .
-sudo docker run -it --rm ex02
+docker build -t ex02 .
+docker run -it --rm ex02
