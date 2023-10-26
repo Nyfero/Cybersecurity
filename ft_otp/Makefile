@@ -22,58 +22,60 @@ INC_PATH = inc
 
 INC = $(addprefix $(INC_PATH)/, ft_otp.hpp)
 
-# LIBS_PATH = ~/Document/in_progress/Parser
-
-CLASS_PATH = class
-
-CLASS_H = $(addprefix $(CLASS_PATH)/,Parser.hpp)
+LIBS_PATH = /mnt/nfs/homes/gsap/Documents/in_progress/Parser
 
 #	Folders
 SRCS_PATH = srcs
 
-UTILS_PATH = utils
+GENERATE_PATH = generate
 
 PARSING_PATH = parsing
+
+STORE_PATH = store
+
+UTILS_PATH = utils
 
 #    Files
 FILES = main.cpp
 
-# CLASS = $(addprefix $(CLASS_PATH)/, ImageFormat.cpp)
+GENERATE = $(addprefix $(GENERATE_PATH)/, checkKey.cpp generateCode.cpp)
+
+PARSING = $(addprefix $(PARSING_PATH)/, checkParsing.cpp)
+
+STORE = $(addprefix $(STORE_PATH)/, checkHexa.cpp storeKey.cpp)
 
 UTILS = $(addprefix $(UTILS_PATH)/, print.cpp)
 
-PARSING = $(addprefix $(PARSING_PATH)/, Parser.cpp check_parsing.cpp)
-
-SRCS = $(addprefix $(SRCS_PATH)/, $(FILES) $(PARSING) $(UTILS))
+SRCS = $(addprefix $(SRCS_PATH)/, $(FILES) $(GENERATE) $(PARSING) $(STORE) $(UTILS))
 
 #    Compilation
 NAME = ft_otp
 
 CXX = g++ -std=c++17
 
-CFLAGS = -Wall -Wextra -Werror 
+CFLAGS = -Wall -Wextra -Werror
 
-LIBS = 
+LIBS = -L$(LIBS_PATH) -lParser
 
 RM = rm -rf
 
 OBJS_PATH = objs/
 
-OBJS = $(patsubst $(SRCS_PATH)%.cpp $(PARSING_PATH)%.cpp $(UTILS_PATH)%.cpp , $(OBJS_PATH)%.o, $(SRCS))
+OBJS = $(patsubst $(SRCS_PATH)%.cpp $(GENERATE_PATH)%.cpp $(PARSING_PATH)%.cpp $(STORE_PATH)%.cpp $(UTILS_PATH)%.cpp , $(OBJS_PATH)%.o, $(SRCS))
 
 #    Rules
 all: $(NAME)
 
 $(NAME): $(OBJS_PATH) $(OBJS) $(CLASS_H) $(INC)
 	@ echo "$(BLUE)\n         ***Make $(NAME) ***\n$(END)"
-	$(HIDE) $(CXX) $(CFLAGS) $(OBJS) -o $(NAME) $(LIBS)
+	$(HIDE) $(CXX) $(CFLAGS) -I$(LIBS_PATH) $(OBJS) -o $(NAME) $(LIBS)
 	@ echo "$(GREEN)\n        ---$(NAME) created ---\n$(END)"
 
 $(OBJS_PATH):
 	$(HIDE) mkdir -p $(OBJS_PATH)
 
 $(OBJS_PATH)%.o: $(SRCS_PATH)%.cpp $(CLASS_H) Makefile
-	$(HIDE) $(CXX) $(CFLAGS) -c $< -o $@
+	$(HIDE) $(CXX) $(CFLAGS) -I$(LIBS_PATH) -c $< -o $@
 	@ echo "$(GREEN)[ OK ]$(END) $(CYAN)${<:.s=.o}$(END)"
 
 clean:
