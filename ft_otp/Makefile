@@ -44,7 +44,7 @@ PARSING = $(addprefix $(PARSING_PATH)/, checkParsing.cpp)
 
 STORE = $(addprefix $(STORE_PATH)/, checkHexa.cpp storeKey.cpp)
 
-UTILS = $(addprefix $(UTILS_PATH)/, print.cpp)
+UTILS = $(addprefix $(UTILS_PATH)/, print.cpp encrypted.cpp decrypted.cpp)
 
 SRCS = $(addprefix $(SRCS_PATH)/, $(FILES) $(GENERATE) $(PARSING) $(STORE) $(UTILS))
 
@@ -55,7 +55,7 @@ CXX = g++ -std=c++17
 
 CFLAGS = -Wall -Wextra -Werror
 
-LIBS = -L$(LIBS_PATH) -lParser
+LIBS = -L$(LIBS_PATH) -lParser -lssl -lcrypto
 
 RM = rm -rf
 

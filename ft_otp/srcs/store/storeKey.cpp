@@ -53,8 +53,21 @@ int key_store(std::string file) {
         outputFile.put(c);
     }
 
+    // Generate a random key and initialization vector (IV)
+    unsigned char key[EVP_MAX_KEY_LENGTH], iv[EVP_MAX_IV_LENGTH];
+    std::cout << "key: " << key << std::endl;
+    std::cout << "iv: " << iv << std::endl;
+    if (RAND_bytes(key, EVP_MAX_KEY_LENGTH) != 1 || RAND_bytes(iv, EVP_MAX_IV_LENGTH) != 1) {
+        std::cerr << "Failed to generate key and IV." << std::endl;
+        return 1;
+    }
+
     // Encrypt ft_otp.key
-    // TO DO
+    if (encryptFile(file.c_str(), "ft_otp.key", key, iv)) {
+        std::cerr << "Encryption failed." << std::endl;
+        return 1;
+    }
+
 
     // Close files
     inputFile.close();
