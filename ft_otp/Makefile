@@ -22,7 +22,7 @@ INC_PATH = inc
 
 INC = $(addprefix $(INC_PATH)/, ft_otp.hpp)
 
-LIBS_PATH = /mnt/nfs/homes/gsap/Documents/in_progress/Parser
+LIBS_PATH = /home/gsap/Documents/in_progress/Parser
 
 #	Folders
 SRCS_PATH = srcs

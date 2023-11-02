@@ -10,9 +10,11 @@
 #include <fstream>
 #include <vector>
 #include <ctime>
+#include <time.h>
 #include <openssl/rand.h>
 #include <openssl/sha.h>
 #include <openssl/hmac.h>
+#include <bits/stdc++.h>
 #include "Parser.hpp"
 
 
@@ -46,8 +48,7 @@ int check_hexa(std::string file);
 int check_arg(std::string arg);
 
 //storeKey.cpp
-int store_key(std::string arg);
-int key_store(std::string file);
+int store_key(std::string file);
 
 
 /***********/
@@ -55,10 +56,10 @@ int key_store(std::string file);
 /***********/
 
 // decrypted.cpp
-int decryptFile(const char* inputFile, const char* outputFile, const unsigned char* key, const unsigned char* iv);
+std::string decrypt(std::string file);
 
 // encrypted.cpp
-int encryptFile(const char* inputFile, const char* outputFile, const unsigned char* key, const unsigned char* iv);
+int encrypt(std::string file);
 
 //print.cpp
 int print_usage();

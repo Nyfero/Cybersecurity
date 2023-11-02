@@ -33,10 +33,7 @@ static int check_flag(Parser data) {
     data.Set_flags(flag);
     try {
         data.Check_args_flags_i(0);
-        if (data.Get_args_i(0) == "-k") {
-            return (check_file(data));
-        }
-        return 0;
+        return (check_file(data));
     }
     catch (const std::exception& e) {
         std::cerr << "./ft_otp: error: " << data.Get_args_i(0) << ": " << e.what() << std::endl;

@@ -4,22 +4,8 @@ int generate_code(std::string file) {
     if (check_key(file))
         return 1;
 
-
-// Generate a random key and initialization vector (IV)
-    unsigned char tmp[EVP_MAX_KEY_LENGTH], iv[EVP_MAX_IV_LENGTH];
-    std::cout << "tmp: " << tmp << std::endl;
-    std::cout << "iv: " << iv << std::endl;
-    if (RAND_bytes(tmp, EVP_MAX_KEY_LENGTH) != 1 || RAND_bytes(iv, EVP_MAX_IV_LENGTH) != 1) {
-        std::cerr << "Failed to generate key and IV." << std::endl;
-        return 1;
-    }
-    if (decryptFile(file.c_str(), "ft_otp.key", tmp, iv)) {
-        std::cerr << "Failed to decrypt" << std::endl;
-        return 1;
-    }
-
     // Load the key from a source
-    const std::string &key = file;
+    const std::string &key = decrypt(file);
 
     // Calculate the counter if not provided (time-based, 30-second intervals)
     size_t counter = static_cast<unsigned long long>(std::time(nullptr) / 30);
